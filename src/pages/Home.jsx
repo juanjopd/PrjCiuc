@@ -1,9 +1,11 @@
-import styled from "styled-components";
-export function Home() {
-  return (<Container>
-<h1>Home</h1>
-  </Container>);
-}
-const Container =styled.div`
-  height:100vh;
-`
+import React from "react";
+import { FormLogin } from "../components/FormLogin";
+
+export const Home = () => {
+  return (
+    <>
+      <FormLogin />
+    </>
+  );
+};
+

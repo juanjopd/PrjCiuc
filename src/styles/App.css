@@ -1,0 +1,100 @@
+html,
+body {
+  height: 100%;
+  margin: 0;
+}
+
+.fondo {
+  height: 100vh; /* 100% de la altura de la viewport */
+  width: 100vw; /* 100% del ancho de la viewport */
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: url("/src/assets/fondo.svg") no-repeat center center fixed;
+  background-size: cover;
+}
+
+.ucp {
+  width: 15%;
+  position: absolute;
+  top: 55px;
+  left: 35%;
+}
+
+.login-container {
+  width: 350px;
+  margin: 0 auto;
+  padding: 20px;
+  border-radius: 30px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  background-color: #ffffff;
+}
+
+.login-header img {
+  width: 100px;
+  margin-bottom: 20px;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.login-form label {
+  margin-bottom: 5px;
+  text-align: left;
+}
+
+.login-form input[type="email"],
+.login-form input[type="password"] {
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.remember-me {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.remember-me input {
+  margin-right: 10px;
+}
+
+.login-button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+
+.google-login-button {
+  background-color: #ffffff;
+  color: black;
+  border: 1px solid #ccc;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.google-login-button img {
+  width: 20px;
+  margin-right: 10px;
+}
+
+.forgot-password {
+  color: black;
+  text-decoration: none;
+  margin-top: 10px;
+  text-align: left;
+}

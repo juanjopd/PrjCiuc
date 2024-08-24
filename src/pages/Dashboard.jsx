@@ -1,10 +1,14 @@
+import React from "react";
 import styled from "styled-components";
-export function Estadisticas() {
+
+export const Dashboard = () => {
   return (
     <Container>
-      <h1>Estadistica</h1>
+      <h1>Dashboard</h1>
     </Container>
   );
-}
+};
+
 const Container = styled.div`
- height:100vh;`;
+  height: 100vh;
+`;

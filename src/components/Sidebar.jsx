@@ -11,6 +11,7 @@ import { MdOutlineAnalytics, MdLogout } from "react-icons/md";
 import { NavLink } from "react-router-dom";
 import { useContext } from "react";
 import { ThemeContext } from "../App";
+
 export function Sidebar({ sidebarOpen, setSidebarOpen }) {
   const ModSidebaropen = () => {
     setSidebarOpen(!sidebarOpen);
@@ -83,17 +84,17 @@ const linksArray = [
   {
     label: "Home",
     icon: <AiOutlineHome />,
-    to: "/",
+    to: "/dashboard",
   },
   {
-    label: "Estadisticas",
+    label: "Grupos",
     icon: <MdOutlineAnalytics />,
-    to: "/estadisticas",
+    to: "/creacion",
   },
   {
-    label: "Productos",
+    label: "Registro de profesores",
     icon: <AiOutlineApartment />,
-    to: "/productos",
+    to: "/registro",
   },
   {
     label: "Diagramas",
@@ -126,6 +127,8 @@ const Container = styled.div`
   background: ${(props) => props.theme.bg};
   position: sticky;
   padding-top: 20px;
+  flex-grow: 1;
+  width: 100%;
   .Sidebarbutton {
     position: absolute;
     top: ${v.xxlSpacing};
@@ -173,7 +176,7 @@ const Container = styled.div`
   }
   .LinkContainer {
     margin: 8px 0;
-   
+
     padding: 0 15%;
     :hover {
       background: ${(props) => props.theme.bg3};
@@ -184,7 +187,7 @@ const Container = styled.div`
       text-decoration: none;
       padding: calc(${v.smSpacing}-2px) 0;
       color: ${(props) => props.theme.text};
-      height:50px;
+      height: 50px;
       .Linkicon {
         padding: ${v.smSpacing} ${v.mdSpacing};
         display: flex;
