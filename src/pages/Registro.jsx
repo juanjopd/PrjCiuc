@@ -5,18 +5,22 @@ import { TableRegister } from "../components/TableRegister";
 
 export const Registro = () => {
   return (
-    <Container>
-      <h1>Registro</h1>
-      <FormRegister />
-      <TableRegister />
-    </Container>
+    <>
+      <Container>
+        <Titulo>Registro</Titulo>
+        <FormRegister />
+        <TableRegister />
+      </Container>
+    </>
   );
 };
 
 const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-  justify-content: center;
-  align-items: center;
+  height: 100vh;
+`;
+
+const Titulo = styled.h1`
+  text-align: left;
+  padding: 20px;
+  padding-left: 30px;
 `;

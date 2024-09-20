@@ -25,11 +25,11 @@ export const FormRegister = () => {
               <Form.Label>Nombre</Form.Label>
               <Form.Control type="text" placeholder="name" />
             </Form.Group>
-            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+            <Form.Group className="mb-3" controlId="exampleForm.ControlInput2">
               <Form.Label>Email address</Form.Label>
               <Form.Control type="email" placeholder="name@example.com" />
             </Form.Group>
-            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+            <Form.Group className="mb-3" controlId="exampleForm.ControlInput3">
               <Form.Label>password</Form.Label>
               <Form.Control type="password" placeholder="password" />
             </Form.Group>
@@ -54,4 +54,14 @@ export const FormRegister = () => {
   );
 };
 
-const Container = styled.div``;
+const Container = styled.div`
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  position: absolute; /* Position the button absolutely */
+  right: 10px; /* Position the button to the right */
+  top: 10px; /* Position the button from the top */
+`;

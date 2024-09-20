@@ -2,6 +2,7 @@ import React from "react";
 import "../styles/App.css";
 import ucp from "../assets/logoM.png";
 import { useNavigate } from "react-router-dom";
+import { Button } from "react-bootstrap";
 
 export const FormLogin = () => {
   const navigate = useNavigate();
@@ -34,11 +35,19 @@ export const FormLogin = () => {
             <input type="checkbox" id="remember" name="remember" />
             <label htmlFor="remember">Recordar mis credenciales</label>
           </div>
-          <button type="submit" className="login-button" onClick={handleClick}>
+          <Button
+            variant="success"
+            type="submit"
+            className="login-button"
+            onClick={handleClick}
+          >
             Ingresar
-          </button>
-          <a href="#" className="forgot-password">
+          </Button>
+          <a href="#" className="enlaces">
             Olvidé mi contraseña
+          </a>
+          <a href="/estudiantes" className="enlaces">
+            Registrar estudiante
           </a>
         </form>
       </div>

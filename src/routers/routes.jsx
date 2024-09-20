@@ -4,6 +4,7 @@ import { Registro } from "../pages/Registro";
 import { Creacion } from "../pages/Creacion";
 import { Dashboard } from "../pages/Dashboard";
 import { Reportes } from "../pages/Reportes";
+import { RegistroEstudiantes } from "../pages/RegistroEstudiantes";
 
 export function MyRoutes() {
   return (
@@ -12,7 +13,8 @@ export function MyRoutes() {
       <Route path="/creacion" element={<Creacion />} />
       <Route path="/registro" element={<Registro />} />
       <Route path="/dashboard" element={<Dashboard />} />
-      <Route path="/reportes" element={<Reportes />} />s
+      <Route path="/reportes" element={<Reportes />} />
+      <Route path="/estudiantes" element={<RegistroEstudiantes />} />
     </Routes>
   );
 }
