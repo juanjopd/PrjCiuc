@@ -15,7 +15,7 @@ export const FormLogin = () => {
     <div className="fondo">
       <img className="ucp" src={ucp} alt="Universidad Católica de Pereira" />
       <div className="login-container">
-        <div className="login-header"></div>
+        <div className="login-header">Iniciar sesión</div>
         <form className="login-form">
           <label htmlFor="email">Usuario</label>
           <input

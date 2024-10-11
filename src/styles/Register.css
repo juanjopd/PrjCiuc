@@ -1,8 +1,16 @@
-* {
+html,
+body {
+  height: 100%;
   margin: 0;
-  padding: 0;
-  border: 0;
-  font-size: 100%;
-  font: inherit;
-  vertical-align: baseline;
+}
+
+.fondo {
+  height: 100vh; /* 100% de la altura de la viewport */
+  width: 100vw; /* 100% del ancho de la viewport */
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: url("/src/assets/fondo.svg") no-repeat center center fixed;
+  background-size: cover;
 }
