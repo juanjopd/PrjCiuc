@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import logo from "../assets/react.svg";
 import { v } from "../styles/Variables";
@@ -12,10 +13,17 @@ import { NavLink } from "react-router-dom";
 import { useContext } from "react";
 import { ThemeContext } from "../App";
 
+const getRoleFromCookies = () => {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; role=`);
+  if (parts.length === 2) return parts.pop().split(";").shift();
+};
+
 export function Sidebar({ sidebarOpen, setSidebarOpen }) {
   const ModSidebaropen = () => {
     setSidebarOpen(!sidebarOpen);
   };
+
   const { setTheme, theme } = useContext(ThemeContext);
   const CambiarTheme = () => {
     setTheme((theme) => (theme === "light" ? "dark" : "light"));
@@ -57,7 +65,12 @@ export function Sidebar({ sidebarOpen, setSidebarOpen }) {
       ))}
       <Divider />
       <div className="Themecontent">
-        {sidebarOpen && (theme == 'dark' ? <span className="titletheme">Dark mode</span> : <span className="titletheme">Light mode</span>)}
+        {sidebarOpen &&
+          (theme == "dark" ? (
+            <span className="titletheme">Dark mode</span>
+          ) : (
+            <span className="titletheme">Light mode</span>
+          ))}
         <div className="Togglecontent">
           <div className="grid theme-container">
             <div className="content">
@@ -80,33 +93,49 @@ export function Sidebar({ sidebarOpen, setSidebarOpen }) {
   );
 }
 //#region Data links
+const role = getRoleFromCookies();
+
 const linksArray = [
-  {
-    label: "Home",
-    icon: <AiOutlineHome />,
-    to: "/dashboard",
-  },
-  {
-    label: "Grupos",
-    icon: <MdOutlineAnalytics />,
-    to: "/creacion",
-  },
-  {
-    label: "Registro de profesores",
-    icon: <AiOutlineApartment />,
-    to: "/registro",
-  },
-  {
-    label: "Diagramas",
-    icon: <MdOutlineAnalytics />,
-    to: "/diagramas",
-  },
-  {
-    label: "Reportes",
-    icon: <MdOutlineAnalytics />,
-    to: "/reportes",
-  },
+  ...(role === "admin"
+    ? [
+        {
+          label: "Home",
+          icon: <AiOutlineHome />,
+          to: "/dashboard",
+        },
+        {
+          label: "Grupos",
+          icon: <MdOutlineAnalytics />,
+          to: "/creacion",
+        },
+        {
+          label: "Registro de profesores",
+          icon: <AiOutlineApartment />,
+          to: "/registro",
+        },
+        {
+          label: "Diagramas",
+          icon: <MdOutlineAnalytics />,
+          to: "/diagramas",
+        },
+        {
+          label: "Reportes",
+          icon: <MdOutlineAnalytics />,
+          to: "/reportes",
+        },
+      ]
+    : []),
+  ...(role === "teacher"
+    ? [
+        {
+          label: "Mis grupos",
+          icon: <MdOutlineAnalytics />,
+          to: "/groupsTeacher",
+        },
+      ]
+    : []),
 ];
+
 const secondarylinksArray = [
   {
     label: "Configuración",
@@ -294,4 +323,5 @@ const Divider = styled.div`
   background: ${(props) => props.theme.bg3};
   margin: ${v.lgSpacing} 0;
 `;
+
 //#endregion

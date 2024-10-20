@@ -35,7 +35,7 @@ export const FormRegister = () => {
               <Form.Control type="email" placeholder="name@example.com" />
             </Form.Group>
             <Form.Group className="mb-3" controlId="exampleForm.ControlInput3">
-              <Form.Label>password</Form.Label>
+              <Form.Label>Password</Form.Label>
               <Form.Control type="password" placeholder="password" />
             </Form.Group>
             <Form.Select aria-label="Default select example">

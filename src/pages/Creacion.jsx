@@ -7,9 +7,8 @@ export const Creacion = () => {
   return (
     <div>
       <Container>
-        <Titulo>Creacion de grupo</Titulo>
+        <Titulo>Creación de grupo</Titulo>
         <CreateGroup />
-        <CardGroup />
       </Container>
     </div>
   );

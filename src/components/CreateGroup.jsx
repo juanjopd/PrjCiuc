@@ -2,11 +2,28 @@ import { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
+import Select from "react-select";
 import styled from "styled-components";
+
+const options = [
+  { value: "chocolate", label: "Chocolate" },
+  { value: "strawberry", label: "Strawberry" },
+  { value: "vanilla", label: "Vanilla" },
+];
+
+const idiomas = [
+  { value: "ingles", label: "Ingles" },
+  { value: "italiano", label: "Italiano" },
+  { value: "portugues", label: "Portugués" },
+];
+
+const tipo = [
+  { value: "curso", label: "Curso" },
+  { value: "examen", label: "Examen" },
+];
 
 const CreateGroup = () => {
   const [show, setShow] = useState(false);
-
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
@@ -23,24 +40,29 @@ const CreateGroup = () => {
         keyboard={false}
       >
         <Modal.Header closeButton>
-          <Modal.Title>Modal title</Modal.Title>
+          <Modal.Title>Creación de grupo</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form>
-            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-              <Form.Label>Email address</Form.Label>
-              <Form.Control
-                type="email"
-                placeholder="name@example.com"
-                autoFocus
-              />
+            <Form.Group className="mb-3" controlId="Form.ControlInput1">
+              <Form.Label>Nombre del grupo</Form.Label>
+              <Form.Control type="text" autoFocus />
             </Form.Group>
-            <Form.Group
-              className="mb-3"
-              controlId="exampleForm.ControlTextarea1"
-            >
-              <Form.Label>Example textarea</Form.Label>
-              <Form.Control as="textarea" rows={3} />
+            <Form.Group className="mb-3">
+              <Form.Label>Tipo de grupo</Form.Label>
+              <Select options={tipo} />
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="Form.ControlInput2">
+              <Form.Label>nivel</Form.Label>
+              <Form.Control type="text" />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Idioma</Form.Label>
+              <Select options={idiomas} />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Profesor</Form.Label>
+              <Select options={options} />
             </Form.Group>
           </Form>
         </Modal.Body>

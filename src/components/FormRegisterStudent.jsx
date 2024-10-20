@@ -2,6 +2,25 @@ import React from "react";
 import "../styles/Register.css";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
+import Select from "react-select";
+
+const options = [
+  { value: "primero", label: "1" },
+  { value: "segundo", label: "2" },
+  { value: "tercero", label: "3" },
+  { value: "cuarto", label: "4" },
+  { value: "quinto", label: "5" },
+  { value: "sexto", label: "6" },
+  { value: "septimo", label: "7" },
+  { value: "octavo", label: "8" },
+  { value: "noveno", label: "9" },
+  { value: "decimo", label: "10" },
+];
+
+const programas = [
+  { value: "ae", label: "Administracion de empresas" },
+  { value: "primero", label: "1" },
+];
 
 const FormRegisterStudent = () => {
   return (
@@ -23,26 +42,11 @@ const FormRegisterStudent = () => {
             </Form.Group>
             <Form.Group className="mb-3" controlId="formSemestre">
               <Form.Label>Semestre</Form.Label>
-              <Form.Select aria-label="Default select example">
-                <option>Selecciona su semestre</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
-                <option value="6">6</option>
-                <option value="7">7</option>
-                <option value="8">8</option>
-                <option value="9">9</option>
-                <option value="10">10</option>
-              </Form.Select>
+              <Select options={options} />
             </Form.Group>
             <Form.Group className="mb-3" controlId="formSemestre">
               <Form.Label>Programa</Form.Label>
-              <Form.Select aria-label="Default select example">
-                <option>Selecciona su programa</option>
-                <option value="1">1</option>
-              </Form.Select>
+              <Select options={programas} />
             </Form.Group>
             <Button variant="success" type="submit">
               Registrar
