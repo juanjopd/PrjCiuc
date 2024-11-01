@@ -134,6 +134,15 @@ const linksArray = [
         },
       ]
     : []),
+  ...(role === "student"
+    ? [
+        {
+          label: "Mis grupos",
+          icon: <MdOutlineAnalytics />,
+          to: "/groupsStudent",
+        },
+      ]
+    : []),
 ];
 
 const secondarylinksArray = [

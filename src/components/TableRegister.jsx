@@ -4,6 +4,7 @@ import DataTable from "react-data-table-component";
 import styled from "styled-components";
 
 export const TableRegister = () => {
+  const baseUrl = import.meta.env.VITE_BASE_URL;
   const [users, setUsers] = useState([]); // Estado para almacenar los usuarios
   const [loading, setLoading] = useState(false); // Estado para indicar si se está cargando los datos
   const [error, setError] = useState(null); // Estado para almacenar errores
@@ -11,9 +12,11 @@ export const TableRegister = () => {
   const fetchUsers = async () => {
     try {
       setLoading(true);
-      const response = await axios.get("http://localhost:3001/api/v1/users");
+      const response = await axios.get(`${baseUrl}/api/users`, {
+        withCredentials: true, // This will include cookies with the request
+      });
       if (response.status >= 200 && response.status < 300) {
-        const usersData = response.data.body;
+        const usersData = response.data.users;
         setUsers(usersData);
       } else {
         setError("Error en la respuesta de la API");
@@ -49,11 +52,11 @@ export const TableRegister = () => {
       name: "Rol",
       selector: (row) => row.role,
     },
-    {
+    /* {
       name: "idioma",
       selector: (row) => row.language,
       sortable: true,
-    },
+    }, */
   ];
 
   return (

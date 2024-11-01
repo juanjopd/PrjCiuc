@@ -3,16 +3,57 @@ import styled from "styled-components";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Modal from "react-bootstrap/Modal";
+import axios from "axios";
 
 export const FormRegister = () => {
   const [show, setShow] = useState(false);
-
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+    role: "teacher", // Inicializar directamente como 'teacher'
+  });
+  const baseUrl = import.meta.env.VITE_BASE_URL;
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    /* console.log("Formulario enviado:", formData); */
+    try {
+      const dataToSend = {
+        ...formData,
+      };
+
+      const response = await axios.post(`${baseUrl}/api/users`, dataToSend);
+      //console.log("Respuesta del servidor:", response.data);
+
+      // Limpiar los campos del formulario
+      setFormData({
+        name: "",
+        email: "",
+        password: "",
+        role: "teacher",
+      });
+
+      handleClose();
+    } catch (error) {
+      console.error("Error al registrar el profesor:", error);
+    }
+  };
+
   return (
     <Container>
       <Button variant="primary" onClick={handleShow}>
-        Registar profesor
+        Registrar profesor
       </Button>
 
       <Modal
@@ -25,35 +66,48 @@ export const FormRegister = () => {
           <Modal.Title>Registro</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Form>
-            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+          <Form onSubmit={handleSubmit}>
+            <Form.Group className="mb-3" controlId="formName">
               <Form.Label>Nombre</Form.Label>
-              <Form.Control type="text" placeholder="name" />
+              <Form.Control
+                type="text"
+                placeholder="Nombre"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                required
+              />
             </Form.Group>
-            <Form.Group className="mb-3" controlId="exampleForm.ControlInput2">
+            <Form.Group className="mb-3" controlId="formEmail">
               <Form.Label>Email address</Form.Label>
-              <Form.Control type="email" placeholder="name@example.com" />
+              <Form.Control
+                type="email"
+                placeholder="name@example.com"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                required
+              />
             </Form.Group>
-            <Form.Group className="mb-3" controlId="exampleForm.ControlInput3">
+            <Form.Group className="mb-3" controlId="formPassword">
               <Form.Label>Password</Form.Label>
-              <Form.Control type="password" placeholder="password" />
+              <Form.Control
+                type="password"
+                placeholder="Contraseña"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                required
+              />
             </Form.Group>
-            <Form.Select aria-label="Default select example">
-              <option>Open this select menu</option>
-              <option value="1">One</option>
-              <option value="2">Two</option>
-              <option value="3">Three</option>
-            </Form.Select>
+            {/* Contenedor para el botón */}
+            <div className="d-flex justify-content-between">
+              <Button variant="primary" type="submit">
+                Guardar Cambios
+              </Button>
+            </div>
           </Form>
         </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
-            Close
-          </Button>
-          <Button variant="primary" onClick={handleClose}>
-            Save Changes
-          </Button>
-        </Modal.Footer>
       </Modal>
     </Container>
   );

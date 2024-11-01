@@ -4,6 +4,8 @@ import ucp from "../assets/logoM.png";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Button } from "react-bootstrap";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export const FormLogin = () => {
   const [email, setEmail] = useState("");
@@ -36,11 +38,42 @@ export const FormLogin = () => {
 
       // Obtiene la ruta correspondiente al rol, o una ruta por defecto si el rol no existe en el mapeo
       const navigateTo = roleRoutes[role] || "/defaultRoute";
-
-      // Navegar a la ruta correspondiente
-      navigate(navigateTo);
+      if (navigateTo) {
+        // Mostrar notificación de éxito y redirigir
+        toast.success("Inicio de sesión exitoso!", {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+        navigate(navigateTo);
+      } else {
+        // Mostrar notificación de error si el rol no es válido
+        toast.error("Acceso denegado. Rol no válido.", {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      }
     } catch (error) {
-      console.log(error);
+      // Mostrar notificación de error en caso de fallo en el login
+      toast.error("Correo o contraseña incorrectos.", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+      console.log("Error en el inicio de sesión:", error);
     }
   };
   return (
@@ -85,6 +118,7 @@ export const FormLogin = () => {
           </a>
         </form>
       </div>
+      <ToastContainer />
     </div>
   );
 };

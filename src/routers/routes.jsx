@@ -6,6 +6,7 @@ import { Dashboard } from "../pages/Dashboard";
 import { Reportes } from "../pages/Reportes";
 import { RegistroEstudiantes } from "../pages/RegistroEstudiantes";
 import { GroupsTeacher } from "../pages/GroupsTeacher";
+import { GroupsStudent } from "../pages/GroupsStudent";
 
 export function MyRoutes() {
   return (
@@ -17,6 +18,7 @@ export function MyRoutes() {
       <Route path="/reportes" element={<Reportes />} />
       <Route path="/estudiantes" element={<RegistroEstudiantes />} />
       <Route path="/groupsTeacher" element={<GroupsTeacher />} />
+      <Route path="/groupsStudent" element={<GroupsStudent />} />
     </Routes>
   );
 }
