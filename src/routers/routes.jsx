@@ -7,6 +7,8 @@ import { Reportes } from "../pages/Reportes";
 import { RegistroEstudiantes } from "../pages/RegistroEstudiantes";
 import { GroupsTeacher } from "../pages/GroupsTeacher";
 import { GroupsStudent } from "../pages/GroupsStudent";
+import { CreacionGrupo } from "../pages/CreacionGrupo";
+import { Examen } from "../pages/examen";
 
 export function MyRoutes() {
   return (
@@ -19,6 +21,8 @@ export function MyRoutes() {
       <Route path="/estudiantes" element={<RegistroEstudiantes />} />
       <Route path="/groupsTeacher" element={<GroupsTeacher />} />
       <Route path="/groupsStudent" element={<GroupsStudent />} />
+      <Route path="/grupoCurso" element={<CreacionGrupo />} />
+      <Route path="/grupoExamen" element={<Examen />} />
     </Routes>
   );
 }

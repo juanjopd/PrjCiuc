@@ -25,7 +25,7 @@ const CreateGroup = () => {
     tipo: "",
     nivel: "",
     idioma: "",
-    profesor: "",
+    /* profesor: "", */
   });
 
   const baseUrl = import.meta.env.VITE_BASE_URL; // Your API base URL
@@ -72,7 +72,6 @@ const CreateGroup = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Datos enviados:", formData); // Revisa el contenido aquí
     try {
       const response = await axios.post(
         `${baseUrl}/api/groups`, // URL de la API
@@ -155,7 +154,7 @@ const CreateGroup = () => {
               <Form.Label>Profesor</Form.Label>
               <Select
                 options={professors.map((professor) => ({
-                  value: professor.id, // Usa el ID en lugar del nombre
+                  value: professor.id, // Usar el ID aquí
                   label: professor.name,
                 }))}
                 onChange={(selectedOption) =>

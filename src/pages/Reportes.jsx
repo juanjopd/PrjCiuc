@@ -1,9 +1,22 @@
+import React from "react";
+import CreateReport from "../components/CreateReport";
 import styled from "styled-components";
-export function Reportes() {
-  return (<Container>
-<h1>Reportes</h1>
-  </Container>);
-}
-const Container =styled.div`
-   height:100vh;
-`
+
+export const Reportes = () => {
+  return (
+    <Container>
+      <Titulo>Reportes</Titulo>
+      <CreateReport />
+    </Container>
+  );
+};
+
+const Container = styled.div`
+  height: 100vh;
+`;
+
+const Titulo = styled.h1`
+  text-align: left;
+  padding: 20px;
+  padding-left: 30px;
+`;

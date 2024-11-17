@@ -5,16 +5,20 @@ import { Modal, Button, Form } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import styled from "styled-components";
 import Select from "react-select";
-import { PDFDownloadLink } from "@react-pdf/renderer";
-import { StudentsPdf } from "./StudentsPDF";
 
-export const TableGroup = () => {
+export const TableExamen = () => {
   const [students, setStudents] = useState([]); // Lista completa de estudiantes
   const [studentsOptions, setStudentsOptions] = useState([]); // Opciones filtradas para el select
   const [selectedStudents, setSelectedStudents] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState(null);
-  const [grade, setGrade] = useState("");
+  const [grades, setGrades] = useState({
+    speaking: "",
+    listening: "",
+    reading: "",
+    writing: "",
+    englishTest: "",
+  });
   const baseUrl = import.meta.env.VITE_BASE_URL;
 
   // Obtener todos los estudiantes al montar el componente
@@ -82,9 +86,19 @@ export const TableGroup = () => {
   const addStudent = (selectedOption) => {
     const student = selectedOption.data;
     if (!selectedStudents.some((s) => s.studentCode === student.studentCode)) {
-      setSelectedStudents([...selectedStudents, { ...student, grade: "" }]);
-      // Remove the selected student from the dropdown options
-      // Remove the selected student from the dropdown options
+      setSelectedStudents([
+        ...selectedStudents,
+        {
+          ...student,
+          grades: {
+            speaking: "",
+            listening: "",
+            reading: "",
+            writing: "",
+            englishTest: "",
+          }, // Inicialización de grades
+        },
+      ]);
       setStudentsOptions((prevOptions) =>
         prevOptions.filter(
           (option) => option.data.studentCode !== student.studentCode
@@ -96,20 +110,44 @@ export const TableGroup = () => {
   // Abrir modal para agregar la nota
   const openGradeModal = (student) => {
     setSelectedStudent(student);
-    setGrade(student.grade || "");
+    setGrades(
+      student.grades || {
+        speaking: "",
+        listening: "",
+        reading: "",
+        writing: "",
+        englishTest: "",
+      }
+    );
     setShowModal(true);
   };
 
-  // Guardar nota en la tabla
-  const saveGrade = () => {
+  // Guardar notas en la tabla
+  const saveGrades = () => {
     setSelectedStudents((prevStudents) =>
       prevStudents.map((student) =>
         student.studentCode === selectedStudent.studentCode
-          ? { ...student, grade }
+          ? { ...student, grades }
           : student
       )
     );
     setShowModal(false);
+  };
+
+  const handleGradeChange = (e, field) => {
+    const value = parseFloat(e.target.value) || 0;
+  
+    setGrades((prevGrades) => {
+      const updatedGrades = { ...prevGrades, [field]: value };
+  
+      if (field !== "englishTest") {
+        // Automatically calculate englishTest as the sum of other grades
+        const { speaking = 0, listening = 0, reading = 0, writing = 0 } = updatedGrades;
+        updatedGrades.englishTest = speaking + listening + reading + writing;
+      }
+  
+      return updatedGrades;
+    });
   };
 
   // Configuración de columnas de la tabla
@@ -117,37 +155,36 @@ export const TableGroup = () => {
     { name: "Nombre", selector: (row) => row.name, sortable: true },
     { name: "Código", selector: (row) => row.studentCode, sortable: true },
     {
-      name: "Nota",
-      selector: (row) => row.grade || "Sin nota",
+      name: "Speaking",
+      selector: (row) => row.grades?.speaking || "N/A",
+      sortable: true,
+    },
+    {
+      name: "Listening",
+      selector: (row) => row.grades?.listening || "N/A",
+      sortable: true,
+    },
+    {
+      name: "Reading",
+      selector: (row) => row.grades?.reading || "N/A",
+      sortable: true,
+    },
+    {
+      name: "Writing",
+      selector: (row) => row.grades?.writing || "N/A",
+      sortable: true,
+    },
+    {
+      name: "English Test",
+      selector: (row) => row.grades?.englishTest || "N/A",
       sortable: true,
     },
     {
       name: "Acciones",
       cell: (row) => (
-        <div style={{ display: "flex", alignItems: "center" }}>
-          <Button
-            variant="primary"
-            onClick={() => openGradeModal(row)}
-            style={{ width: "100px" }}
-          >
-            Agregar Nota
-          </Button>
-
-          <PDFDownloadLink
-            document={<StudentsPdf students={[row]} />}
-            fileName={`${row.studentCode}_reporte_estudiante.pdf`}
-          >
-            {({ loading }) => (
-              <Button
-                variant="secondary"
-                disabled={loading}
-                style={{ marginLeft: "10px", width: "100px" }} // Match width with the first button
-              >
-                {loading ? "Generando PDF..." : "Generar PDF"}
-              </Button>
-            )}
-          </PDFDownloadLink>
-        </div>
+        <Button variant="primary" onClick={() => openGradeModal(row)}>
+          Agregar Notas
+        </Button>
       ),
       ignoreRowClick: true,
       allowOverflow: true,
@@ -175,28 +212,38 @@ export const TableGroup = () => {
         selectableRows
       />
 
-      {/* Modal para agregar nota */}
+      {/* Modal para agregar notas */}
       <Modal show={showModal} onHide={() => setShowModal(false)}>
         <Modal.Header closeButton>
-          <Modal.Title>Agregar Nota</Modal.Title>
+          <Modal.Title>Agregar Notas</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Form.Group controlId="formGrade">
-            <Form.Label>Nota</Form.Label>
-            <Form.Control
-              type="number"
-              value={grade}
-              onChange={(e) => setGrade(e.target.value)}
-              placeholder="Introduce la nota del estudiante"
-            />
-          </Form.Group>
+          {["speaking", "listening", "reading", "writing", "englishTest"].map(
+            (field) => (
+              <Form.Group key={field} controlId={`form${field}`}>
+                <Form.Label>
+                  {field.charAt(0).toUpperCase() + field.slice(1)}
+                </Form.Label>
+                <Form.Control
+                  type="number"
+                  name={field}
+                  value={grades[field]}
+                  onChange={(e) => handleGradeChange(e, field)}
+                  placeholder={`Introduce la nota de ${field}`}
+                  min="0"
+                  max="100"
+                  step="1"
+                />
+              </Form.Group>
+            )
+          )}
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setShowModal(false)}>
             Cancelar
           </Button>
-          <Button variant="primary" onClick={saveGrade}>
-            Guardar Nota
+          <Button variant="primary" onClick={saveGrades}>
+            Guardar Notas
           </Button>
         </Modal.Footer>
       </Modal>

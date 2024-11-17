@@ -5,20 +5,20 @@ body {
 }
 
 .fondo {
-  height: 100vh; /* 100% de la altura de la viewport */
-  width: 100vw; /* 100% del ancho de la viewport */
-  margin: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: url("/src/assets/fondo.svg") no-repeat center center fixed;
-  background-size: cover;
+  min-height: 100vh; /* Asegura que se extienda al menos hasta la altura de la ventana */
+  width: 100%;
+  background: url("/src/assets/fondo.svg") repeat; /* Cambiar a repeat para duplicar la imagen */
+  background-size: auto; /* Ajusta el tamaño de la imagen según sea necesario */
+  background-attachment: fixed; /* La imagen de fondo permanece fija mientras haces scroll */
+  display: flex; /* Usar flexbox para centrar contenido si es necesario */
+  justify-content: center; /* Centrar horizontalmente */
+  align-items: center; /* Centrar verticalmente */
 }
 
 .ucp {
   width: 15%;
   position: absolute;
-  top: 55px;
+  top: 40px;
 }
 
 .login-container {

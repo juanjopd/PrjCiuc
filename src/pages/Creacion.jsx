@@ -5,12 +5,13 @@ import React from "react";
 
 export const Creacion = () => {
   return (
-    <div>
+    <>
       <Container>
         <Titulo>Creación de grupo</Titulo>
         <CreateGroup />
+        <CardGroup />
       </Container>
-    </div>
+    </>
   );
 };
 

@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import Button from "react-bootstrap/Button";
-import Form from "react-bootstrap/Form";
-import Modal from "react-bootstrap/Modal";
+import { Button, Modal, Form, Spinner } from "react-bootstrap";
 import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export const FormRegister = () => {
   const [show, setShow] = useState(false);
@@ -14,6 +14,7 @@ export const FormRegister = () => {
     role: "teacher", // Inicializar directamente como 'teacher'
   });
   const baseUrl = import.meta.env.VITE_BASE_URL;
+  const [isLoading, setIsLoading] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
@@ -27,14 +28,24 @@ export const FormRegister = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    /* console.log("Formulario enviado:", formData); */
+
+    // Verificar si los campos están vacíos
+    if (!formData.name || !formData.email || !formData.password) {
+      toast.warn("Todos los campos son obligatorios"); // Notificación de advertencia
+      return;
+    }
+
+    setIsLoading(true);
+
     try {
       const dataToSend = {
         ...formData,
       };
 
-      const response = await axios.post(`${baseUrl}/api/users`, dataToSend);
-      //console.log("Respuesta del servidor:", response.data);
+      const response = await axios.post(`${baseUrl}/api/teacher`, dataToSend);
+
+      // Notificación de éxito
+      toast.success("Registro exitoso");
 
       // Limpiar los campos del formulario
       setFormData({
@@ -46,7 +57,16 @@ export const FormRegister = () => {
 
       handleClose();
     } catch (error) {
+      // Si el correo ya está registrado
+      if (error.response && error.response.status === 400) {
+        toast.error("El correo ya está registrado");
+      } else {
+        // Otro tipo de error
+        toast.error("Error al registrar el profesor");
+      }
       console.error("Error al registrar el profesor:", error);
+    } finally {
+      setIsLoading(false); // Ocultar el indicador de carga
     }
   };
 
@@ -102,13 +122,18 @@ export const FormRegister = () => {
             </Form.Group>
             {/* Contenedor para el botón */}
             <div className="d-flex justify-content-between">
-              <Button variant="primary" type="submit">
-                Guardar Cambios
+              <Button variant="primary" type="submit" disabled={isLoading}>
+                {isLoading ? (
+                  <Spinner animation="border" size="sm" />
+                ) : (
+                  "Guardar Cambios"
+                )}
               </Button>
             </div>
           </Form>
         </Modal.Body>
       </Modal>
+      <ToastContainer />
     </Container>
   );
 };

@@ -4,18 +4,22 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Select from "react-select";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import styled from "styled-components";
 
-const options = [
-  { value: "primero", label: "1" },
-  { value: "segundo", label: "2" },
-  { value: "tercero", label: "3" },
-  { value: "cuarto", label: "4" },
-  { value: "quinto", label: "5" },
-  { value: "sexto", label: "6" },
-  { value: "septimo", label: "7" },
-  { value: "octavo", label: "8" },
-  { value: "noveno", label: "9" },
-  { value: "decimo", label: "10" },
+const semesterOptions = [
+  { value: "1", label: "1" },
+  { value: "2", label: "2" },
+  { value: "3", label: "3" },
+  { value: "4", label: "4" },
+  { value: "5", label: "5" },
+  { value: "6", label: "6" },
+  { value: "7", label: "7" },
+  { value: "8", label: "8" },
+  { value: "9", label: "9" },
+  { value: "10", label: "10" },
 ];
 
 const FormRegisterStudent = () => {
@@ -29,8 +33,38 @@ const FormRegisterStudent = () => {
     email: "",
     semestre: "",
     password: "",
-    role: "", 
+    role: "",
+    programa: "",
   });
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchProgramas = async () => {
+      try {
+        const response = await axios.get(`${baseUrl}/api/programa`);
+        setProgramas(response.data); // Guarda los programas en el estado
+      } catch (error) {
+        console.error("Error fetching programas:", error.message);
+        if (error.response) {
+          console.error("Response data:", error.response.data);
+          console.error("Response status:", error.response.status);
+        } else if (error.request) {
+          console.error("Request:", error.request);
+        } else {
+          console.error("Error message:", error.message);
+        }
+      }
+    };
+
+    fetchProgramas();
+  }, [baseUrl]);
+
+  const handleSelectChange = (selectedOption, name) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: selectedOption.value,
+    }));
+  };
 
   // Obtener roles desde la API
   useEffect(() => {
@@ -62,18 +96,42 @@ const FormRegisterStudent = () => {
   // Manejar el envío del formulario
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(formData); // Verifica que solo contenga 'role'
+    // Verificar si todos los campos están completos
+    if (
+      !formData.name ||
+      !formData.studentCode ||
+      !formData.email ||
+      !formData.password ||
+      !formData.role
+    ) {
+      toast.error("Todos los campos son obligatorios");
+      return;
+    }
     try {
-      await axios.post(`${baseUrl}/api/users`, formData); // Cambia la URL según tu API
-      alert("Registro exitoso");
+      await axios.post(`${baseUrl}/api/users`, formData);
+      toast.success("Registro exitoso");
+      // Espera un momento antes de redirigir para que se muestre el toast
+      setTimeout(() => {
+        navigate("/groupsStudent");
+      }, 2000);
     } catch (error) {
-      console.error("Error al registrar:", error);
+      if (error.response && error.response.status === 409) {
+        // Supone que el servidor envía un código 409 si el correo ya está registrado
+        toast.error("El correo ya está registrado");
+      } else {
+        toast.error("Error al registrar. Inténtalo nuevamente.");
+      }
     }
   };
 
   return (
     <div className="fondo">
       <div className="login-container">
+        <ToastContainer
+          position="top-right"
+          autoClose={5000}
+          hideProgressBar={false}
+        />
         <Form onSubmit={handleSubmit}>
           <Form.Group className="mb-3" controlId="formRole">
             <Form.Label>Rol</Form.Label>
@@ -125,19 +183,41 @@ const FormRegisterStudent = () => {
           </Form.Group>
 
           {/* Mostrar campos adicionales solo si el rol es "estudiante" */}
-          {/*  {selectedRole && selectedRole.value === "student" && (
+          {selectedRole && selectedRole.value === "student" && (
             <>
-              <Form.Group className="mb-3" controlId="formSemestre">
+              <Form.Group className="mb-3 " controlId="formSemestre">
                 <Form.Label>Semestre</Form.Label>
-                <Form.Control
-                  type="text"
-                  name="semestre"
-                  value={formData.semestre}
-                  onChange={handle User Input}
+                <Select
+                  options={semesterOptions}
+                  value={semesterOptions.find(
+                    (option) => option.value === formData.semestre
+                  )}
+                  onChange={(selectedOption) =>
+                    setFormData({
+                      ...formData,
+                      semestre: selectedOption.value,
+                    })
+                  }
+                  placeholder="Seleccione un semestre"
+                  menuPlacement="top"
+                />
+              </Form.Group>
+              <Form.Group className="mb-3 ">
+                <Form.Label>Programa</Form.Label>
+                <Select
+                  options={programas.map((programa) => ({
+                    value: programa.id, // Suponiendo que 'id' es el identificador único
+                    label: programa.name, // Suponiendo que 'nombre' es el nombre del programa
+                  }))}
+                  placeholder="Selecciona un programa"
+                  onChange={(selectedOption) =>
+                    handleSelectChange(selectedOption, "programa")
+                  }
+                  menuPlacement="top"
                 />
               </Form.Group>
             </>
-          )} */}
+          )}
           <Button variant="success" type="submit">
             Registrar
           </Button>
