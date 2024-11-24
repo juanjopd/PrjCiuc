@@ -12,40 +12,39 @@ const CardGroups = () => {
 
   const navigate = useNavigate();
 
-  const handleNavigate = (tipo) => {
+  const handleNavigate = (tipo, id) => {
     if (tipo === "examen") {
-      navigate("/grupoExamen");
+      navigate(`/grupoExamen/${id}`);
     } else if (tipo === "curso") {
-      navigate("/grupoCurso");
+      navigate(`/grupoCurso/${id}`);
     }
   };
 
   useEffect(() => {
     const fetchGroups = async () => {
       try {
-        // Check the user's role from cookies
-        const role = Cookies.get("role"); // Assumes the role is stored in a cookie named "role"
-        const userId = Cookies.get("userId"); // Assumes the userId is also stored in cookies
+        // Verificar el rol y el usuario actual desde las cookies
+        const role = Cookies.get("role"); // Rol del usuario
+        const userId = Cookies.get("userId"); // ID del usuario (asociado al profesor)
 
-        // Fetch groups based on role
         let response;
+
         if (role === "admin") {
-          // Admin gets all groups
+          // Si el usuario es administrador, obtiene todos los grupos
           response = await axios.get(`${baseUrl}/api/groups`);
         } else if (role === "teacher") {
-          // Teacher gets only assigned groups
-          response = await axios.get(`${baseUrl}/api/groups`, {
-            params: { professor_id: userId },
-          });
+          // Si el usuario es profesor, obtiene grupos asignados
+          response = await axios.get(`${baseUrl}/api/groups/professors/${userId}`);
         }
 
+        // Verifica y establece los datos en el estado
         if (response && response.data.groups) {
           setGroups(response.data.groups);
         } else {
-          console.error("No groups found in response:", response);
+          console.error("No se encontraron grupos en la respuesta:", response);
         }
       } catch (error) {
-        console.error("Error fetching groups:", error);
+        console.error("Error al obtener los grupos:", error);
       }
     };
 
@@ -68,7 +67,7 @@ const CardGroups = () => {
             </Card.Text>
             <Button
               variant="primary"
-              onClick={() => handleNavigate(group.tipo)}
+              onClick={() => handleNavigate(group.tipo, group.id)}
             >
               Ir al grupo
             </Button>

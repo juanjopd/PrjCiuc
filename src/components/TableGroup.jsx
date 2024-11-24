@@ -7,6 +7,9 @@ import styled from "styled-components";
 import Select from "react-select";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import { StudentsPdf } from "./StudentsPDF";
+import { useParams } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export const TableGroup = () => {
   const [students, setStudents] = useState([]); // Lista completa de estudiantes
@@ -16,6 +19,7 @@ export const TableGroup = () => {
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [grade, setGrade] = useState("");
   const baseUrl = import.meta.env.VITE_BASE_URL;
+  const { id: groupId } = useParams();
 
   // Obtener todos los estudiantes al montar el componente
   useEffect(() => {
@@ -51,6 +55,72 @@ export const TableGroup = () => {
     );
   }, [baseUrl]);
 
+  // Función para guardar estudiantes seleccionados en el backend
+  const saveStudentsToGroup = async () => {
+    if (!groupId) {
+      toast.error("ID del grupo no encontrado");
+      return;
+    }
+
+    try {
+      // Preparar los datos para enviar, asegurándose de que `student_code` sea un objeto
+      const studentCodes = selectedStudents.map((student) => ({
+        student_code: student.studentCode, // Aquí agregamos el formato correcto
+      }));
+
+      const response = await axios.post(
+        "http://localhost:3001/api/addStudent",
+        {
+          id: Number(groupId), // El ID del grupo
+          students: studentCodes, // Enviar el array de estudiantes con los códigos
+        }
+      );
+
+      toast.success(response.data.message);
+    } catch (error) {
+      console.error("Error al guardar estudiantes:", error);
+      toast.error(
+        "Error al guardar estudiantes: " +
+          (error.response?.data?.message || "Desconocido")
+      );
+    }
+  };
+
+  /* useEffect(() => {
+    const fetchStudents = async () => {
+      try {
+        const response = await axios.get(`${baseUrl}/api/groups/${groupId}`);
+        if (response.data && Array.isArray(response.data.students)) {
+          // Mapear los estudiantes para usar los nombres de atributos esperados
+          const mappedStudents = response.data.students.map((student) => ({
+            name: student.student_name, // Mapeamos 'student_name' a 'name'
+            studentCode: student.student_code, // Mapeamos 'student_code' a 'studentCode'
+            grade: student.grade, // Mantener la nota si ya existe
+          }));
+          setStudents(mappedStudents);
+          setStudentsOptions(
+            mappedStudents.map((student) => ({
+              value: student,
+              label: `${student.name} - ${student.studentCode}`,
+              data: student,
+            }))
+          );
+        } else {
+          console.error(
+            "Formato inesperado en la respuesta de la API:",
+            response.data
+          );
+        }
+      } catch (error) {
+        console.error("Error al obtener los estudiantes:", error);
+      }
+    }; 
+    if (groupId) {
+      fetchStudents();
+    }
+  }, [baseUrl, groupId]);*/
+
+
   // Filtrar estudiantes según el término de búsqueda
   const handleSearch = (inputValue) => {
     if (inputValue) {
@@ -78,13 +148,16 @@ export const TableGroup = () => {
     }
   };
 
-  // Agregar estudiante a la tabla
+  // Agregar un estudiante a la tabla
   const addStudent = (selectedOption) => {
     const student = selectedOption.data;
+    // Verifica si el estudiante ya está en la lista seleccionada
     if (!selectedStudents.some((s) => s.studentCode === student.studentCode)) {
-      setSelectedStudents([...selectedStudents, { ...student, grade: "" }]);
-      // Remove the selected student from the dropdown options
-      // Remove the selected student from the dropdown options
+      setSelectedStudents((prevSelected) => [
+        ...prevSelected,
+        { ...student, grade: "" }, // Agrega el estudiante con una nota vacía
+      ]);
+      // Elimina el estudiante de las opciones disponibles
       setStudentsOptions((prevOptions) =>
         prevOptions.filter(
           (option) => option.data.studentCode !== student.studentCode
@@ -101,15 +174,34 @@ export const TableGroup = () => {
   };
 
   // Guardar nota en la tabla
-  const saveGrade = () => {
-    setSelectedStudents((prevStudents) =>
-      prevStudents.map((student) =>
-        student.studentCode === selectedStudent.studentCode
-          ? { ...student, grade }
-          : student
-      )
-    );
-    setShowModal(false);
+  // Guardar nota de un estudiante en el backend
+  const saveGrade = async () => {
+    try {
+      const payload = {
+        student_code: selectedStudent.studentCode,
+        idCourse: groupId,
+        grade,
+      };
+
+      const response = await axios.post(`${baseUrl}/api/saveGrade`, payload);
+
+      if (response.status === 200) {
+        setSelectedStudents((prevStudents) =>
+          prevStudents.map((student) =>
+            student.studentCode === selectedStudent.studentCode
+              ? { ...student, grade }
+              : student
+          )
+        );
+        setShowModal(false);
+        alert("Nota guardada correctamente.");
+      } else {
+        alert("Error al guardar la nota.");
+      }
+    } catch (error) {
+      console.error("Error al guardar la nota:", error);
+      alert("Ocurrió un error al intentar guardar la nota.");
+    }
   };
 
   // Configuración de columnas de la tabla
@@ -157,8 +249,7 @@ export const TableGroup = () => {
 
   return (
     <Container>
-      <h2>Buscar y Agregar Estudiantes</h2>
-      {/* Selector de estudiantes con react-select */}
+      <h2>Estudiantes del Grupo</h2>
       <Select
         options={studentsOptions}
         onInputChange={handleSearch}
@@ -166,28 +257,26 @@ export const TableGroup = () => {
         placeholder="Buscar estudiante..."
         isClearable
       />
-
-      {/* Tabla de estudiantes seleccionados */}
       <DataTable
         title="Estudiantes Seleccionados"
         columns={columns}
         data={selectedStudents}
         selectableRows
       />
-
-      {/* Modal para agregar nota */}
+      <Button variant="success" onClick={saveStudentsToGroup}>
+        Guardar Estudiantes
+      </Button>
       <Modal show={showModal} onHide={() => setShowModal(false)}>
         <Modal.Header closeButton>
           <Modal.Title>Agregar Nota</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Form.Group controlId="formGrade">
+          <Form.Group>
             <Form.Label>Nota</Form.Label>
             <Form.Control
               type="number"
               value={grade}
               onChange={(e) => setGrade(e.target.value)}
-              placeholder="Introduce la nota del estudiante"
             />
           </Form.Group>
         </Modal.Body>
@@ -200,6 +289,7 @@ export const TableGroup = () => {
           </Button>
         </Modal.Footer>
       </Modal>
+      <ToastContainer />
     </Container>
   );
 };

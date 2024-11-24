@@ -21,8 +21,8 @@ export function MyRoutes() {
       <Route path="/estudiantes" element={<RegistroEstudiantes />} />
       <Route path="/groupsTeacher" element={<GroupsTeacher />} />
       <Route path="/groupsStudent" element={<GroupsStudent />} />
-      <Route path="/grupoCurso" element={<CreacionGrupo />} />
-      <Route path="/grupoExamen" element={<Examen />} />
+      <Route path="/grupoCurso/:id" element={<CreacionGrupo />} />
+      <Route path="/grupoExamen/:id" element={<Examen />} />
     </Routes>
   );
 }
